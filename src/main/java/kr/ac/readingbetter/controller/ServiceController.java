@@ -38,13 +38,13 @@ public class ServiceController {
 
 	@Autowired
 	private AccusationService accusationService;
-	
+
 	@Autowired
 	private WishbookService wishbookService;
 
 	@Autowired
 	private BoardService boardService;
-	
+
 	// 공지
 	// 공지 리스트 띄우기
 	@RequestMapping(value = "/noticelist", method = RequestMethod.GET)
@@ -193,7 +193,7 @@ public class ServiceController {
 		return "redirect:/service/noticeview/" + noticeNo;
 	}
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	// 문의
 	// 문의 리스트
 	@RequestMapping("/questionlist")
@@ -208,34 +208,41 @@ public class ServiceController {
 	public String questionView(@RequestParam(value = "no") Long no, Model model) {
 		BoardVo content = boardService.getContent(no);
 		model.addAttribute("contents", content);
-		 
+		boardService.updateViewCount(no);
 		return "service/questionview";
 	}
-	
+
 	// 문의 등록 폼
 	@RequestMapping("/questionwrite")
 	public String questionWrite() {
 		return "service/questionwrite";
 	}
+
+	// 답글 등록 폼
+	@RequestMapping("/questioncomment")
+	public String questionComment(@RequestParam(value = "no") Long no, Model model) {
+		BoardVo content = boardService.getContent(no);
+		model.addAttribute("contents", content);
+		return "service/questioncomment";
+	}
 	
 	// 문의 등록
 	@RequestMapping("/questionwrite/write")
-	public String writeQuestion(
-			@RequestParam(value = "group") Integer groupNo, 
-			HttpSession session, 
-			BoardVo vo) {
+	public String writeQuestion(HttpSession session, BoardVo vo) {
 		MemberVo authUser = (MemberVo) session.getAttribute("authUser");
-		Long no = authUser.getNo();
-		vo.setMemberNo(no);
-		if (groupNo != null) {
-			vo.setGroupNo(groupNo);
-			vo.setPosition("2");
-			System.out.println(groupNo);
-			System.out.println(vo);
-			boardService.insertComment(vo);
-		} else {
-			boardService.insertQuestion(vo);
-		}
+		vo.setMemberNo(authUser.getNo());
+		boardService.insertQuestion(vo);
+		return "redirect:/service/questionlist";
+	}
+	
+	// 답글 등록
+	@RequestMapping("/questioncomment/write")
+	public String writeComment(HttpSession session, BoardVo vo, @RequestParam(value="group") Integer groupNo, @RequestParam(value="no") Long no){
+		MemberVo authUser = (MemberVo) session.getAttribute("authUser");
+		vo.setMemberNo(authUser.getNo());
+		vo.setGroupNo(groupNo);
+		boardService.insertComment(vo);
+		boardService.updateAccept(no);
 		return "redirect:/service/questionlist";
 	}
 	///////////////////////////////////////////////////////////////////////////
@@ -243,27 +250,27 @@ public class ServiceController {
 	// 희망도서
 	// 희망도서 리스트
 	@RequestMapping("/wishbooklist")
-	public String wishBookList(Model model,WishbookVo wishbookVo) {
+	public String wishBookList(Model model, WishbookVo wishbookVo) {
 		int pageLength = 5;
 		int beginPage;
-		
+
 		if (wishbookVo.getPageNo() == null) {
 			wishbookVo.setPageNo(1);
 		}
-		
+
 		if (wishbookVo.getwKwd() == null) {
 			wishbookVo.setwKwd("");
 			List<WishbookVo> listpage = wishbookService.listPage(wishbookVo);
-			model.addAttribute("listpage",listpage);
+			model.addAttribute("listpage", listpage);
 		}
-		
+
 		String wKwd = wishbookVo.getwKwd();
 		wishbookVo.setwKwd(wKwd);
 
 		List<WishbookVo> list = wishbookService.listkwd(wishbookVo);
 		List<WishbookVo> listkwd = wishbookService.listKwdPage(wishbookVo);
-		model.addAttribute("listpage",listkwd);
-		
+		model.addAttribute("listpage", listkwd);
+
 		int currentBlock = (int) Math.ceil((double) wishbookVo.getPageNo() / pageLength);
 
 		int currentPage = wishbookVo.getPageNo();
@@ -274,16 +281,16 @@ public class ServiceController {
 		if (endPage > total) {
 			endPage = total;
 		}
-		
-		model.addAttribute("wKwd",wKwd);
+
+		model.addAttribute("wKwd", wKwd);
 		model.addAttribute("beginPage", beginPage);
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("total", total);
-		
+
 		return "service/wishbooklist";
 	}
-	
+
 	// 희망도서 쓰기 화면 열기
 	@RequestMapping("/wishbookwriteform")
 	public String wishBookWriteForm() {

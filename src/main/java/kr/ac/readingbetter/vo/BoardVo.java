@@ -8,10 +8,12 @@ public class BoardVo {
 	private String regDate;
 	private Integer viewCount;
 	private Integer groupNo;
-	private String position;
+	private String boardPosition;
 	private String accept;
 	private Long memberNo;
 	private String id;
+	private Integer position; // 글을 등록한 사람의 등급
+	private String name; // 글을 등록한 사람의 이름 (GM 표시용)
 
 	public Long getNo() {
 		return no;
@@ -61,12 +63,12 @@ public class BoardVo {
 		this.groupNo = groupNo;
 	}
 
-	public String getPosition() {
-		return position;
+	public String getBoardPosition() {
+		return boardPosition;
 	}
 
-	public void setPosition(String position) {
-		this.position = position;
+	public void setBoardPosition(String boardPosition) {
+		this.boardPosition = boardPosition;
 	}
 
 	public String getAccept() {
@@ -93,10 +95,26 @@ public class BoardVo {
 		this.id = id;
 	}
 
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Override
 	public String toString() {
-		return "AdminBoardVo [no=" + no + ", title=" + title + ", content=" + content + ", regDate=" + regDate
-				+ ", viewCount=" + viewCount + ", groupNo=" + groupNo + ", position=" + position + ", accept=" + accept
-				+ ", memberNo=" + memberNo + ", id=" + id + "]";
+		return "BoardVo [no=" + no + ", title=" + title + ", content=" + content + ", regDate=" + regDate
+				+ ", viewCount=" + viewCount + ", groupNo=" + groupNo + ", boardPosition=" + boardPosition + ", accept="
+				+ accept + ", memberNo=" + memberNo + ", id=" + id + ", position=" + position + ", name=" + name + "]";
 	}
 }

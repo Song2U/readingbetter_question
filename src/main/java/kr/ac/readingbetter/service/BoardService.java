@@ -30,4 +30,12 @@ public class BoardService {
 	public void insertComment(BoardVo vo) {
 		boardDao.insertComment(vo);
 	}
+
+	public void updateAccept(Long no) {
+		boardDao.updateAccept(no);
+	}
+
+	public void updateViewCount(Long no) {
+		boardDao.updateViewCount(no);
+	}
 }

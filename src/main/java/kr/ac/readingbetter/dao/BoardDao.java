@@ -28,4 +28,12 @@ public class BoardDao {
 	public void insertComment(BoardVo vo) {
 		sqlSession.insert("board.writecomment", vo);
 	}
+
+	public void updateAccept(Long no) {
+		sqlSession.update("board.updateAccept", no);
+	}
+
+	public void updateViewCount(Long no) {
+		sqlSession.update("board.updateViewCount", no);
+	}
 }

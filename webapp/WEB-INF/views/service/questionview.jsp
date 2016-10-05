@@ -45,9 +45,13 @@
 							<a href="/readingbetter/service/questionlist" class="btn btn-default">목록</a>
 							<c:if test="${not empty sessionScope.authUser}">
 								<c:if test="${authUser.position eq 0 }">
-									<a href="/readingbetter/service/questionwrite?group=${contents.groupNo }"  class="btn btn-default">답글 작성</a>
-									<br>
-									<br>
+									<c:if test="${contents.position eq 1}">
+										<c:if test="${contents.accept eq 0 }">
+											<a href="/readingbetter/service/questioncomment?no=${contents.no }" class="btn btn-default">답글 작성</a>
+										</c:if>
+										<br>
+										<br>
+									</c:if>
 								</c:if>
 							</c:if>
 						</div>

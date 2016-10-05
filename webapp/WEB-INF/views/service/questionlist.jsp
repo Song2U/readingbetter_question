@@ -45,20 +45,37 @@
 							</tr>
 							<c:forEach items="${list }" var="boardvo">
 								<tr>
-									<td>${boardvo.no }</td>
+									<c:choose>
+										<c:when test="${boardvo.boardPosition eq 2 }">
+											<td></td>
+										</c:when>
+										<c:otherwise>
+											<td>${boardvo.no }</td>
+										</c:otherwise>
+									</c:choose>
 									<td>
-										<a href="/readingbetter/service/questionview?no=${boardvo.no }">${boardvo.title }</a>
+										<c:if test="${boardvo.boardPosition eq 2 }"><img id="re-img"src="http://ec2-52-34-170-68.us-west-2.compute.amazonaws.com/images/re.png"></c:if> <a href="/readingbetter/service/questionview?no=${boardvo.no }"> ${boardvo.title }</a>
 									</td>
-									<td>${boardvo.id }</td>
+									<c:choose>
+										<c:when test="${boardvo.position eq 0 }">
+											<td>${boardvo.name }</td>
+										</c:when>
+										<c:otherwise>
+											<td >${boardvo.id }</td>
+										</c:otherwise>
+									</c:choose>
 									<td>${boardvo.viewCount }</td>
 									<td>${boardvo.regDate }</td>
 									<c:choose>
-										<c:when test="${boardvo.accept eq 1}">
+										<c:when test="${boardvo.accept eq 0}">
 											<td>대기</td>
 										</c:when>
-										<c:when test="${boardvo.accept eq 2}">
+										<c:when test="${boardvo.accept eq 1}">
 											<td>완료</td>
 										</c:when>
+										<c:otherwise>
+										<td><td>
+										</c:otherwise>
 									</c:choose>
 								</tr>
 							</c:forEach>
@@ -66,7 +83,9 @@
 						<div id="button-set">
 							<c:choose>
 								<c:when test="${not empty sessionScope.authUser}">
-									<a class="btn btn-default" href="/readingbetter/service/questionwrite" role="button">글쓰기</a>
+									<c:if test="${authUser.position eq 1 }">
+										<a class="btn btn-default" href="/readingbetter/service/questionwrite" role="button">글쓰기</a>
+									</c:if>
 								</c:when>
 							</c:choose>
 						</div>
