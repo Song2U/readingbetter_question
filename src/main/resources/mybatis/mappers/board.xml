@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+
+	<!-- 문의 리스트, 회원 테이블에서 id 가져옴 -->
+	<select id="list" parameterType="boardvo" resultType="boardvo">
+		<![CDATA[
+			SELECT b.NO, b.title, m.ID, b.VIEW_COUNT as viewCount,
+					 to_char(b.reg_date, 'yyyy-mm-dd') as regdate, b.accept
+			   FROM board b, member m
+			WHERE b.member_no=m.no
+			ORDER BY no DESC
+		]]>
+		<!-- <![CDATA[ // 원래 있던 쿼리 select a.no, a.title, a.content, to_char(a.reg_date, 
+			'yyyy-mm-dd') as regDate, a.view_count as viewCount, a.group_no as groupNo, 
+			a.position, a.accept, a.member_no as memberNo, b.id from board a, member 
+			b where b.no=a.member_no order by a.no desc ]]> -->
+	</select>
+
+	<!-- 문의게시판 내용 보기 -->
+	<select id="contents" parameterType="Long" resultType="boardvo">
+		<![CDATA[
+			select title, content, group_no as groupNo from board where no=#{no}
+		]]>
+	</select>
+
+	<!-- 문의게시판 등록 -->
+	<insert id="write" parameterType="boardvo">
+		<![CDATA[
+			insert into board VALUES (seq_board.nextval, #{title}, #{content}, sysdate, 0, seq_boardgroup.nextval, 1, 1, #{memberNo})
+		]]>
+	</insert>
+
+	<!-- 답글 등록 -->
+	<insert id="writecomment" parameterType="boardvo">
+		<![CDATA[
+			insert into board VALUES (seq_board.nextval, #{title}, #{content}, sysdate, 0, #{groupNo}, #{position}, 1, #{memberNo})
+		]]>
+	</insert>
+</mapper>
